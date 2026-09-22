@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>가을 학습 스프린트</title>
+<style>
+  :root{
+    color-scheme: light dark;
+    --paper:#f3f2ec;
+    --surface:#ffffff;
+    --surface-2:#eceae1;
+    --ink:#232420;
+    --muted:#75705f;
+    --line:#dcd8cb;
+    --accent-study:#33517d;
+    --accent-study-bg:#e7ecf5;
+    --accent-class:#3d7566;
+    --accent-class-bg:#e5efe9;
+    --accent-move:#a8762c;
+    --accent-move-bg:#f3e9d6;
+    --accent-meal:#8a7f5e;
+    --accent-meal-bg:#efeada;
+    --accent-event:#79497a;
+    --accent-event-bg:#f0e6ee;
+    --accent-personal:#5b6570;
+    --accent-personal-bg:#e7eaec;
+    --shadow: 0 1px 2px rgba(35,36,32,0.06), 0 6px 16px rgba(35,36,32,0.05);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#1b1c1a;
+      --surface:#232421;
+      --surface-2:#2b2c28;
+      --ink:#eeece3;
+      --muted:#a8a290;
+      --line:#3a3a34;
+      --accent-study:#8fa8d6;
+      --accent-study-bg:#26314a;
+      --accent-class:#8fc4af;
+      --accent-class-bg:#203630;
+      --accent-move:#d9ab63;
+      --accent-move-bg:#3a2f19;
+      --accent-meal:#cbc094;
+      --accent-meal-bg:#33301f;
+      --accent-event:#c99bca;
+      --accent-event-bg:#382c38;
+      --accent-personal:#b7bfc7;
+      --accent-personal-bg:#2a2e33;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 20px rgba(0,0,0,0.35);
+    }
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans KR','IBM Plex Sans',-apple-system,'Malgun Gothic',sans-serif;
+  }
+  .wrap{
+    max-width:760px;
+    margin:0 auto;
+    padding:28px 20px 60px;
+    display:flex;
+    flex-direction:column;
+    gap:28px;
+  }
+
+  header.top{display:flex;flex-direction:column;gap:10px;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',ui-monospace,monospace;
+    font-size:12px;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+    color:var(--accent-study);
+  }
+  h1{
+    font-family:'Gowun Batang',serif;
+    font-weight:700;
+    font-size:clamp(28px,6vw,38px);
+    line-height:1.2;
+    margin:0;
+    text-wrap:balance;
+  }
+  .sub{
+    color:var(--muted);
+    font-size:14.5px;
+    line-height:1.6;
+    max-width:60ch;
+  }
+
+  .status{
+    font-size:12px;
+    font-family:'IBM Plex Mono',monospace;
+    color:var(--muted);
+  }
+  .status.ok{color:var(--accent-class);}
+  .status.err{color:#b5493f;}
+
+  .deadline{
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-left:4px solid var(--accent-study);
+    border-radius:10px;
+    padding:14px 16px;
+    box-shadow:var(--shadow);
+  }
+  .deadline .mark{
+    font-family:'Gowun Batang',serif;
+    font-weight:700;
+    font-size:20px;
+    color:var(--accent-study);
+    white-space:nowrap;
+  }
+  .deadline p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.55;}
+  .deadline strong{color:var(--ink);font-weight:600;}
+
+  .overview{
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding-bottom:4px;
+    -webkit-overflow-scrolling:touch;
+  }
+  .chip{
+    flex:0 0 auto;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:9px 12px;
+    min-width:84px;
+    text-align:center;
+    box-shadow:var(--shadow);
+  }
+  .chip .d{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);}
+  .chip .dow{font-weight:600;font-size:13px;margin-top:1px;}
+  .chip .focus{
+    margin-top:6px;
+    font-size:11px;
+    color:var(--accent-study);
+    background:var(--accent-study-bg);
+    border-radius:6px;
+    padding:2px 6px;
+    display:inline-block;
+    line-height:1.4;
+  }
+
+  .legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px 14px;
+    font-size:12.5px;
+    color:var(--muted);
+  }
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .legend i{width:9px;height:9px;border-radius:2px;display:inline-block;}
+
+  details.day{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:14px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  details.day > summary{
+    list-style:none;
+    cursor:pointer;
+    padding:16px 18px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+  details.day > summary::-webkit-details-marker{display:none;}
+  .s-left{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+  .s-date{
+    font-family:'Gowun Batang',serif;
+    font-weight:700;
+    font-size:19px;
+  }
+  .s-dow{color:var(--muted);font-size:13px;}
+  .s-focus{
+    font-size:12.5px;
+    color:var(--accent-study);
+    background:var(--accent-study-bg);
+    padding:3px 8px;
+    border-radius:7px;
+    white-space:nowrap;
+  }
+  .s-total{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    color:var(--muted);
+    white-space:nowrap;
+  }
+  .s-progress{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    font-weight:600;
+    color:var(--accent-study);
+    background:var(--accent-study-bg);
+    padding:2px 7px;
+    border-radius:6px;
+    white-space:nowrap;
+  }
+  .chevron{
+    width:18px;height:18px;flex:0 0 auto;
+    color:var(--muted);
+    transition:transform .18s ease;
+  }
+  details.day[open] .chevron{transform:rotate(90deg);}
+
+  .timeline{
+    border-top:1px solid var(--line);
+    padding:6px 18px 16px;
+    display:flex;
+    flex-direction:column;
+  }
+  .item{
+    display:grid;
+    grid-template-columns:56px 34px 1fr;
+    gap:6px;
+    padding:5px 0;
+    border-bottom:1px dashed var(--line);
+  }
+  .item.minor{grid-template-columns:56px 1fr;padding:9px 0;}
+  .item:last-child{border-bottom:none;}
+  .item .time{
+    font-family:'IBM Plex Mono',monospace;
+    font-variant-numeric:tabular-nums;
+    font-size:12.5px;
+    color:var(--muted);
+    padding-top:11px;
+  }
+  .item.checkable{cursor:pointer;}
+  .item .check{display:flex;align-items:center;}
+  .item .check label{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:34px;
+    height:34px;
+    cursor:pointer;
+  }
+  .item .check input{
+    width:21px;height:21px;
+    accent-color:var(--accent-study);
+    cursor:pointer;
+    margin:0;
+  }
+  .item .body{display:flex;flex-direction:column;gap:2px;min-width:0;padding-top:6px;}
+  .item.minor .body{padding-top:0;}
+  .item .label{
+    font-size:14px;
+    font-weight:500;
+    display:flex;
+    align-items:center;
+    gap:7px;
+    flex-wrap:wrap;
+  }
+  .item.done .label span:nth-child(2){
+    text-decoration:line-through;
+    text-decoration-color:var(--muted);
+    color:var(--muted);
+  }
+  .item.done .detail{opacity:.6;}
+  .item .label .bar{
+    width:6px;height:6px;border-radius:50%;
+    flex:0 0 auto;
+  }
+  .item .detail{font-size:12.5px;color:var(--muted);}
+  .tag{
+    font-size:10.5px;
+    padding:1px 6px;
+    border-radius:5px;
+    font-weight:600;
+    white-space:nowrap;
+  }
+
+  .item.minor{padding:4px 0;}
+  .item.minor .label{font-size:12.5px;color:var(--muted);font-weight:400;}
+  .item.minor .bar{width:5px;height:5px;}
+
+  .type-study .bar,.tag.type-study{background:var(--accent-study);}
+  .tag.type-study{background:var(--accent-study-bg);color:var(--accent-study);}
+  .type-class .bar{background:var(--accent-class);}
+  .tag.type-class{background:var(--accent-class-bg);color:var(--accent-class);}
+  .type-move .bar{background:var(--accent-move);}
+  .tag.type-move{background:var(--accent-move-bg);color:var(--accent-move);}
+  .type-meal .bar{background:var(--accent-meal);}
+  .tag.type-meal{background:var(--accent-meal-bg);color:var(--accent-meal);}
+  .type-event .bar{background:var(--accent-event);}
+  .tag.type-event{background:var(--accent-event-bg);color:var(--accent-event);}
+  .type-personal .bar{background:var(--accent-personal);}
+  .tag.type-personal{background:var(--accent-personal-bg);color:var(--accent-personal);}
+  .type-break .bar{background:var(--muted);opacity:.6;}
+
+  footer.note{
+    font-size:12.5px;
+    color:var(--muted);
+    line-height:1.7;
+    border-top:1px solid var(--line);
+    padding-top:16px;
+  }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!--
+  ▶ Firebase 붙이는 법 (딱 이 4줄만 채우면 됨):
+  1) https://console.firebase.google.com 에서 프로젝트를 하나 만든다 (무료).
+  2) 왼쪽 메뉴 Build > Firestore Database 로 들어가서 "데이터베이스 만들기" (테스트 모드로 시작해도 됨).
+  3) 왼쪽 톱니바퀴(프로젝트 설정) > 내 앱 추가(</> 웹 아이콘) 를 누르면 firebaseConfig 라는 값이 나온다.
+  4) 그 값을 아래 firebaseConfig 객체에 그대로 붙여넣는다.
+-->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">2026.09.22 — 2026.10.02</div>
+    <h1>가을 학습 스프린트</h1>
+    <p class="sub">국어교육론 인강 34~57강(7회차)을 10/3 마감 전에 끝내기 위한 9일치 시간표. 추석 연휴(9/24~27)와 일요일은 제외했어.</p>
+    <div class="status" id="sync-status">저장소 연결 중…</div>
+  </header>
+
+  <div class="deadline">
+    <div class="mark" id="dday-mark">D-·</div>
+    <p>오늘 기준 <strong>10/3 수강 마감</strong>까지 남은 날. 공부 시간의 최우선 순위는 인강 완주 → 학과 예복습 → 임용 공부 순.</p>
+  </div>
+
+  <div class="overview" id="overview"></div>
+
+  <div class="legend">
+    <span><i style="background:var(--accent-study)"></i>공부·인강</span>
+    <span><i style="background:var(--accent-class)"></i>학교 수업</span>
+    <span><i style="background:var(--accent-move)"></i>이동</span>
+    <span><i style="background:var(--accent-meal)"></i>식사·휴식</span>
+    <span><i style="background:var(--accent-event)"></i>예배·행사</span>
+    <span><i style="background:var(--accent-personal)"></i>아침·취침 루틴</span>
+  </div>
+
+  <div id="days"></div>
+
+  <footer class="note">
+    자리는 일륜(관리형 독서실) 기준. 교시 중엔 나갈 수는 있어도 중간에 다시 들어갈 수는 없어서, 8시 직전 등원해서 교시 초반 출석체크를 최대한 챙기는 동선으로 짰어. 실제 진행 속도에 따라 회차 경계는 앞뒤로 조금씩 밀릴 수 있어.
+  </footer>
+</div>
+
+<script>
+(function(){
+  var DAYS = [
+    {
+      date:"9/22", dow:"화", focus:"인강 1회차", total:"6h20m",
+      items:[
+        ["06:00","러닝 (뉴스 보며 러닝머신)","personal"],
+        ["07:00","샤워","personal"],
+        ["07:30","화장·채비, 계란+두유+약","personal"],
+        ["08:00","이동 (집→학교)","move"],
+        ["09:00","수업 · 국어역사의 이해","class","~10:15"],
+        ["10:15","이동 (인문대→교육대)","move"],
+        ["10:30","수업 · 시조가사교육론","class","~11:45"],
+        ["11:45","이동 (학교→일륜)","move"],
+        ["12:10","점심 및 휴식","meal"],
+        ["13:00","공부 50분 · 인강 1회차","study"],
+        ["13:50","휴식 10분","break",0,1],
+        ["14:00","공부 50분 · 인강 1회차","study"],
+        ["14:50","휴식 20분","break",0,1],
+        ["15:10","공부 50분 · 인강 1회차","study"],
+        ["16:00","휴식 10분","break",0,1],
+        ["16:10","공부 60분 · 인강 1회차","study"],
+        ["17:10","저녁 및 휴식","meal"],
+        ["18:00","공부 60분 · 인강 1회차","study"],
+        ["19:00","휴식 10분","break",0,1],
+        ["19:10","공부 60분 · 인강 1회차","study"],
+        ["20:10","휴식 10분","break",0,1],
+        ["20:20","공부 50분 · 인강 1회차 마무리","study"],
+        ["21:10","이동 (일륜→집), 취침 전 약","move"],
+        ["22:00","샤워 후 취침","personal"]
+      ]
+    },
+    {
+      date:"9/23", dow:"수", focus:"인강 2회차 시작", total:"3h10m",
+      items:[
+        ["06:00","스트레칭 (다노 눈뜨스 + 강하나 하체)","personal"],
+        ["06:30","샤워","personal"],
+        ["06:50","화장·채비, 계란+두유+약","personal"],
+        ["07:10","이동 (집→일륜)","move"],
+        ["08:00","공부 50분 · 인강 2회차","study"],
+        ["08:50","휴식 5분","break",0,1],
+        ["08:55","공부 50분 · 인강 2회차","study"],
+        ["09:45","휴식 10분","break",0,1],
+        ["09:55","공부 40분 · 인강 2회차","study"],
+        ["10:35","이동 (일륜→학교)","move"],
+        ["11:00","수업 · 국어형태론","class","~11:50"],
+        ["11:50","점심 및 휴식","meal"],
+        ["13:00","수업 · 수학의 세계","class","~13:50"],
+        ["13:50","이동 (자연대→인문대 공부카페)","move"],
+        ["14:00","공부 50분 · 인강 2회차","study"],
+        ["15:00","수업 · 언어철학","class","~15:45"],
+        ["16:00","수업 · 교육평가","class","~18:00"],
+        ["18:00","이동 (전대→조대, 수요예배로 — 가는 길에 식사)","move"],
+        ["19:00","수요예배","event","~20:30"],
+        ["21:00","자유시간 (22:30 전 취침)","personal"]
+      ]
+    },
+    {
+      date:"9/28", dow:"월", focus:"인강 3회차 전체", total:"6h00m", flag:"저녁 일정 조정판",
+      items:[
+        ["06:00","스트레칭","personal"],
+        ["06:30","샤워","personal"],
+        ["06:50","화장·채비, 계란+두유+약","personal"],
+        ["07:10","이동 (집→일륜)","move"],
+        ["08:00","공부 50분 · 인강 3회차","study"],
+        ["08:50","휴식 5분","break",0,1],
+        ["08:55","공부 50분 · 인강 3회차","study"],
+        ["09:45","휴식 10분","break",0,1],
+        ["09:55","공부 40분 · 인강 3회차","study"],
+        ["10:35","이동 (일륜→학교)","move"],
+        ["11:00","수업 · 국어형태론","class","~12:50"],
+        ["12:50","이동하며 고구마+쉐이크","move"],
+        ["13:00","수업 · 수학의 세계","class","~15:00"],
+        ["15:00","수업 · 언어철학","class","~16:50"],
+        ["16:50","이동 (학교→일륜)","move"],
+        ["17:10","저녁 및 휴식 (35분, 평소보다 15분 단축)","meal"],
+        ["17:45","공부 60분 · 인강 3회차","study"],
+        ["18:45","휴식 10분","break",0,1],
+        ["18:55","공부 60분 · 인강 3회차","study"],
+        ["19:55","휴식 10분","break",0,1],
+        ["20:05","공부 60분 · 인강 3회차","study"],
+        ["21:05","휴식 10분","break",0,1],
+        ["21:15","공부 40분 · 인강 3회차 마무리 (배속 시청)","study"],
+        ["21:55","이동 (일륜→집, 평소보다 45분 늦게)","move"],
+        ["22:45","샤워 후 취침 (평소보다 45분 늦음)","personal"]
+      ]
+    },
+    {
+      date:"9/29", dow:"화", focus:"인강 4회차", total:"6h20m",
+      items:[
+        ["06:00","러닝 (뉴스 보며 러닝머신)","personal"],
+        ["07:00","샤워","personal"],
+        ["07:30","화장·채비, 계란+두유+약","personal"],
+        ["08:00","이동 (집→학교)","move"],
+        ["09:00","수업 · 국어역사의 이해","class","~10:15"],
+        ["10:15","이동 (인문대→교육대)","move"],
+        ["10:30","수업 · 시조가사교육론","class","~11:45"],
+        ["11:45","이동 (학교→일륜)","move"],
+        ["12:10","점심 및 휴식","meal"],
+        ["13:00","공부 50분 · 인강 4회차","study"],
+        ["13:50","휴식 10분","break",0,1],
+        ["14:00","공부 50분 · 인강 4회차","study"],
+        ["14:50","휴식 20분","break",0,1],
+        ["15:10","공부 50분 · 인강 4회차","study"],
+        ["16:00","휴식 10분","break",0,1],
+        ["16:10","공부 60분 · 인강 4회차","study"],
+        ["17:10","저녁 및 휴식","meal"],
+        ["18:00","공부 60분 · 인강 4회차","study"],
+        ["19:00","휴식 10분","break",0,1],
+        ["19:10","공부 60분 · 인강 4회차","study"],
+        ["20:10","휴식 10분","break",0,1],
+        ["20:20","공부 50분 · 인강 4회차 마무리","study"],
+        ["21:10","이동 (일륜→집), 취침 전 약","move"],
+        ["22:00","샤워 후 취침","personal"]
+      ]
+    },
+    {
+      date:"9/30", dow:"수", focus:"인강 5회차 시작", total:"3h10m",
+      items:[
+        ["06:00","스트레칭","personal"],
+        ["06:30","샤워","personal"],
+        ["06:50","화장·채비, 계란+두유+약","personal"],
+        ["07:10","이동 (집→일륜)","move"],
+        ["08:00","공부 50분 · 인강 5회차","study"],
+        ["08:50","휴식 5분","break",0,1],
+        ["08:55","공부 50분 · 인강 5회차","study"],
+        ["09:45","휴식 10분","break",0,1],
+        ["09:55","공부 40분 · 인강 5회차","study"],
+        ["10:35","이동 (일륜→학교)","move"],
+        ["11:00","수업 · 국어형태론","class","~11:50"],
+        ["11:50","점심 및 휴식","meal"],
+        ["13:00","수업 · 수학의 세계","class","~13:50"],
+        ["13:50","이동 (자연대→인문대 공부카페)","move"],
+        ["14:00","공부 50분 · 인강 5회차","study"],
+        ["15:00","수업 · 언어철학","class","~15:45"],
+        ["16:00","수업 · 교육평가","class","~18:00"],
+        ["18:00","이동 (전대→조대, 수요예배로 — 가는 길에 식사)","move"],
+        ["19:00","수요예배","event","~20:30"],
+        ["21:00","자유시간 (22:30 전 취침)","personal"]
+      ]
+    },
+    {
+      date:"10/1", dow:"목", focus:"5회차 마무리 + 6회차 시작", total:"6h20m",
+      items:[
+        ["06:00","러닝 (뉴스 보며 러닝머신)","personal"],
+        ["07:00","샤워","personal"],
+        ["07:30","화장·채비, 계란+두유+약","personal"],
+        ["08:00","이동 (집→학교)","move"],
+        ["09:00","수업 · 국어역사의 이해","class","~10:15"],
+        ["10:15","이동 (인문대→교육대)","move"],
+        ["10:30","수업 · 시조가사교육론","class","~11:45"],
+        ["11:45","이동 (학교→일륜)","move"],
+        ["12:10","점심 및 휴식","meal"],
+        ["13:00","공부 50분 · 인강 5회차 마무리","study"],
+        ["13:50","휴식 10분","break",0,1],
+        ["14:00","공부 50분 · 인강 5회차 마무리","study"],
+        ["14:50","휴식 20분","break",0,1],
+        ["15:10","공부 50분 · 인강 5회차 마무리","study"],
+        ["16:00","휴식 10분","break",0,1],
+        ["16:10","공부 60분 · 인강 6회차 시작","study"],
+        ["17:10","저녁 및 휴식","meal"],
+        ["18:00","공부 60분 · 인강 6회차","study"],
+        ["19:00","휴식 10분","break",0,1],
+        ["19:10","공부 60분 · 인강 6회차","study"],
+        ["20:10","휴식 10분","break",0,1],
+        ["20:20","공부 50분 · 인강 6회차","study"],
+        ["21:10","이동 (일륜→집), 취침 전 약","move"],
+        ["22:00","샤워 후 취침","personal"]
+      ]
+    },
+    {
+      date:"10/2", dow:"금", focus:"6회차 마무리 + 7회차 전체", total:"9h40m", flag:"금요일 전용 시간표",
+      items:[
+        ["06:00","스트레칭","personal"],
+        ["06:30","샤워","personal"],
+        ["06:50","화장·채비, 계란+두유+약","personal"],
+        ["07:10","이동 (집→일륜)","move"],
+        ["08:00","공부 50분 · 인강 6회차 마무리","study"],
+        ["09:00","공부 50분 · 인강 6회차 마무리","study"],
+        ["10:00","공부 50분 · 인강 6회차 마무리","study"],
+        ["11:00","공부 50분 · 인강 7회차 시작","study"],
+        ["11:50","점심 및 휴식","meal"],
+        ["13:00","공부 50분 · 인강 7회차","study"],
+        ["13:50","휴식 10분","break",0,1],
+        ["14:00","공부 50분 · 인강 7회차","study"],
+        ["14:50","휴식 20분","break",0,1],
+        ["15:10","공부 50분 · 인강 7회차","study"],
+        ["16:00","휴식 10분","break",0,1],
+        ["16:10","공부 60분 · 인강 7회차","study"],
+        ["17:10","저녁 및 휴식","meal"],
+        ["18:00","공부 60분 · 인강 7회차","study"],
+        ["19:00","휴식 10분","break",0,1],
+        ["19:10","공부 60분 · 인강 7회차","study"],
+        ["20:10","휴식 10분","break",0,1],
+        ["20:20","공부 50분 · 인강 7회차 마무리","study"],
+        ["21:10","이동 (일륜→집)","move"]
+      ]
+    }
+  ];
+
+  var TAG = {study:"공부",class:"수업",move:"이동",meal:"식사",event:"예배",personal:"루틴",break:""};
+
+  DAYS.forEach(function(d){
+    d.items.forEach(function(it, i){ it[5] = d.date.replace("/","-") + "-" + i; });
+  });
+
+  window.__checked = {};
+  window.__dirty = false;
+  window.__docRef = null;
+  window.__saveTimer = null;
+  window.__pendingSave = false;
+  window.__saving = false;
+  window.__dayIds = {};
+
+  window.__renderItem = function(id){
+    var input = document.getElementById("chk-"+id);
+    var row = document.getElementById("row-"+id);
+    var on = !!window.__checked[id];
+    if(input) input.checked = on;
+    if(row) row.classList.toggle("done", on);
+  };
+
+  window.__renderProgress = function(date, ids){
+    var elBadge = document.getElementById("prog-"+date.replace("/","-"));
+    if(!elBadge) return;
+    var done = 0;
+    ids.forEach(function(id){ if(window.__checked[id]) done++; });
+    elBadge.textContent = done + "/" + ids.length + " 완료";
+  };
+
+  window.toggleItem = function(id, dateKey, value){
+    window.__dirty = true;
+    window.__checked[id] = value;
+    window.__renderItem(id);
+    window.__renderProgress(dateKey, window.__dayIds[dateKey] || []);
+    window.__saveChecked();
+  };
+
+  window.__saveChecked = function(){
+    if(!window.__docRef) return;
+    window.__pendingSave = true;
+    if(window.__saveTimer) return;
+    window.__saveTimer = setTimeout(window.__flushSave, 400);
+  };
+
+  window.__flushSave = function(){
+    window.__saveTimer = null;
+    if(!window.__docRef || window.__saving || !window.__pendingSave) return;
+    window.__pendingSave = false;
+    window.__saving = true;
+    window.__docRef.set({ checked: window.__checked })
+      .then(function(){ setStatus("저장됨", "ok"); })
+      .catch(function(e){ setStatus("저장 실패: " + e.message, "err"); })
+      .then(function(){
+        window.__saving = false;
+        if(window.__pendingSave){
+          window.__saveTimer = setTimeout(window.__flushSave, 400);
+        } else {
+          window.__dirty = false;
+        }
+      });
+  };
+
+  function setStatus(text, cls){
+    var el = document.getElementById("sync-status");
+    if(!el) return;
+    el.textContent = text;
+    el.className = "status" + (cls ? " " + cls : "");
+  }
+
+  function esc(s){
+    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+
+  function renderRow(d, it){
+    var time = it[0], label = it[1], type = it[2], endNote = it[3], minor = it[4], id = it[5];
+    var tagHtml = (!minor && TAG[type]) ? '<span class="tag type-'+type+'">'+TAG[type]+'</span>' : '';
+    var detailHtml = endNote ? '<div class="detail">종료 '+esc(endNote)+'</div>' : '';
+    var bodyHtml =
+      '<div class="body">' +
+        '<div class="label"><span class="bar"></span><span>'+esc(label)+'</span>'+tagHtml+'</div>' +
+        detailHtml +
+      '</div>';
+    if(minor){
+      return '<div class="item type-'+type+' minor">' +
+        '<div class="time">'+time+'</div>' + bodyHtml +
+      '</div>';
+    }
+    var dateKey = d.date;
+    return '<div class="item type-'+type+' checkable" id="row-'+id+'">' +
+      '<div class="time">'+time+'</div>' +
+      '<div class="check"><label>' +
+        '<input type="checkbox" id="chk-'+id+'" ' +
+          'onchange="window.toggleItem(\''+id+'\',\''+dateKey+'\',this.checked)">' +
+      '</label></div>' +
+      bodyHtml +
+    '</div>';
+  }
+
+  var overviewHtml = "";
+  var daysHtml = "";
+
+  DAYS.forEach(function(d, idx){
+    overviewHtml +=
+      '<div class="chip">' +
+        '<div class="d">'+d.date+'</div>' +
+        '<div class="dow">'+d.dow+'요일</div>' +
+        '<div class="focus">'+d.focus+'</div>' +
+      '</div>';
+
+    var checkableIds = [];
+    d.items.forEach(function(it){ if(!it[4]) checkableIds.push(it[5]); });
+    window.__dayIds[d.date] = checkableIds;
+
+    var rowsHtml = "";
+    d.items.forEach(function(it){ rowsHtml += renderRow(d, it); });
+
+    daysHtml +=
+      '<details class="day"'+(idx===0 ? " open" : "")+'>' +
+        '<summary>' +
+          '<div class="s-left">' +
+            '<span class="s-date">'+d.date+'</span>' +
+            '<span class="s-dow">'+d.dow+'요일</span>' +
+            '<span class="s-focus">'+d.focus+(d.flag ? " · "+d.flag : "")+'</span>' +
+          '</div>' +
+          '<div style="display:flex;align-items:center;gap:10px;">' +
+            '<span class="s-progress" id="prog-'+d.date.replace("/","-")+'">0/'+checkableIds.length+' 완료</span>' +
+            '<span class="s-total">공부 '+d.total+'</span>' +
+            '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg>' +
+          '</div>' +
+        '</summary>' +
+        '<div class="timeline">'+rowsHtml+'</div>' +
+      '</details>';
+  });
+
+  document.getElementById("overview").innerHTML = overviewHtml;
+  var host = document.getElementById("days");
+  host.style.display = "flex";
+  host.style.flexDirection = "column";
+  host.style.gap = "12px";
+  host.innerHTML = daysHtml;
+
+  (function updateDday(){
+    var deadline = new Date(2026, 9, 3);
+    var now = new Date();
+    var startDeadline = new Date(deadline.getFullYear(), deadline.getMonth(), deadline.getDate());
+    var startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var diffDays = Math.round((startDeadline - startToday) / 86400000);
+    var mark = document.getElementById("dday-mark");
+    if(!mark) return;
+    mark.textContent = diffDays > 0 ? ("D-" + diffDays) : diffDays === 0 ? "D-DAY" : ("D+" + Math.abs(diffDays));
+  })();
+
+  // ============================================================
+  // ▼▼▼ 여기 firebaseConfig 값만 네 프로젝트 값으로 바꿔주면 끝 ▼▼▼
+  // ============================================================
+  var firebaseConfig = {
+    apiKey: "AIzaSyBKtgTCfEYmz9gXB3BoaIg6RP3f-UyS44A",
+    authDomain: "st-a-1fa85.firebaseapp.com",
+    projectId: "st-a-1fa85",
+    storageBucket: "st-a-1fa85.firebasestorage.app",
+    messagingSenderId: "711161727267",
+    appId: "1:711161727267:web:fd9b8229183cc444906496"
+  };
+  // ============================================================
+
+  try{
+    if(firebaseConfig.apiKey === "YOUR_API_KEY"){
+      setStatus("firebaseConfig를 아직 채우지 않아서 저장이 꺼져 있어요 (체크는 됨, 새로고침하면 사라짐)");
+    } else {
+      firebase.initializeApp(firebaseConfig);
+      var db = firebase.firestore();
+      window.__docRef = db.collection("progress").doc("checklist");
+      setStatus("연결하는 중…");
+      window.__docRef.onSnapshot(function(snap){
+        if(window.__dirty) return;
+        var data = snap.exists ? (snap.data() || {}) : {};
+        window.__checked = data.checked || {};
+        Object.keys(window.__checked).forEach(window.__renderItem);
+        Object.keys(window.__dayIds).forEach(function(date){
+          window.__renderProgress(date, window.__dayIds[date]);
+        });
+        setStatus("기기 간 동기화 연결됨", "ok");
+      }, function(e){
+        setStatus("연결 실패: " + e.message, "err");
+      });
+    }
+  }catch(e){
+    setStatus("Firebase 설정 오류: " + e.message, "err");
+  }
+})();
+</script>
+</body>
+</html>
